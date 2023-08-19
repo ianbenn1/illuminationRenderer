@@ -40,7 +40,7 @@ document.getElementById('lightOn').onclick = () => {
     
     dimmingSteps;//remember to make this variable
 
-    //Find all walls/blocked cells and generate shadow zones for them
+    //Find all walls/blocked cells and generate shadow zones for them [TODO!: fix shadows so they only affect the light they're drawn from]
     lightSources.forEach(light => {
         console.log("For each shadow in relation to each light source")
         let coords = light.substring(light.indexOf(' cell') + 5);
@@ -53,12 +53,14 @@ document.getElementById('lightOn').onclick = () => {
             let shadVerticalCoord = shadCoords.substring(0, shadCoords.indexOf('-'));
             let shadHorizontalCoord = shadCoords.substring(shadCoords.indexOf('-')+1);
 
-            if(Number(shadVerticalCoord) > Number(lightVerticalCoord)) { //Shad1, wall above light, shad 6  light 14
+            if(Number(shadVerticalCoord) > Number(lightVerticalCoord)) {
                 console.log('shad1');
                 console.log(`shadVert: ${shadVerticalCoord}  lightVert: ${lightVerticalCoord}`);
                 if(Number(shadHorizontalCoord) == Number(lightHorizontalCoord)) {
-                    for(let i = (Number(shadVerticalCoord)+1); i < MAZEY; i++) {
+                    for(let i = (Number(shadVerticalCoord)+1); i < MAZEX; i++) {
+                        console.log(`gettin cell${i} ${shadHorizontalCoord}`);
                         document.getElementsByClassName(`maze-block cell${i}-${shadHorizontalCoord}`)[0].className += " shadow-cell";
+                        document.getElementsByClassName(`maze-block cell${i}-${shadHorizontalCoord}`)[0].dataset.taken = "true";
                         console.log("adding shadow cell going straight up");
                     }
                 } else if(Number(shadHorizontalCoord) > Number(lightHorizontalCoord)) {
@@ -80,6 +82,7 @@ document.getElementById('lightOn').onclick = () => {
                         console.log(`doing i${i} j${j}`);
                         if(Number(jcurrent) > 0) {
                             document.getElementsByClassName(`maze-block cell${i}-${j}`)[0].className += " shadow-cell";
+                            document.getElementsByClassName(`maze-block cell${i}-${j}`)[0].dataset.taken = "true";
                             j++;
                             jcurrent--;
                             if(Number(j) == Number(MAZEX)) {
@@ -89,6 +92,7 @@ document.getElementById('lightOn').onclick = () => {
                         }
                         if (Number(icurrent) > 0) {
                             document.getElementsByClassName(`maze-block cell${i}-${j}`)[0].className += " shadow-cell";
+                            document.getElementsByClassName(`maze-block cell${i}-${j}`)[0].dataset.taken = "true";
                             i++;
                             icurrent--;
                             if(Number(i) == Number(MAZEY)) {
@@ -118,11 +122,12 @@ document.getElementById('lightOn').onclick = () => {
                     let icurrent = imax;
                     let jcurrent = jmax;
                     console.log(`mazey: ${MAZEY} mazeX: ${MAZEX}`)
-                    while(Number(i) < Number(MAZEY) && Number(j) >= 0) {
+                    while(Number(i) < Number(MAZEX) && Number(j) >= 0) {
                         console.log(`now on i${i} j${j}`);
                         if(Number(jcurrent) > 0) {
-                            console.log('doing j');
+                            console.log(`doing j for cell${i}-${j}`);
                             document.getElementsByClassName(`maze-block cell${i}-${j}`)[0].className += " shadow-cell";
+                            document.getElementsByClassName(`maze-block cell${i}-${j}`)[0].dataset.taken = "true";
                             j--;
                             jcurrent--;
                             if(Number(j) < 0) {
@@ -131,8 +136,8 @@ document.getElementById('lightOn').onclick = () => {
                             }
                         }
                         if (Number(icurrent) > 0) {
-                            console.log('doing i')
                             document.getElementsByClassName(`maze-block cell${i}-${j}`)[0].className += " shadow-cell";
+                            document.getElementsByClassName(`maze-block cell${i}-${j}`)[0].dataset.taken = "true";
                             i++;
                             icurrent--;
                             if(Number(i) == Number(MAZEY)) {
@@ -151,11 +156,12 @@ document.getElementById('lightOn').onclick = () => {
                 if(Number(shadHorizontalCoord) == Number(lightHorizontalCoord)) {
                     for(let i = (Number(shadVerticalCoord)-1); i >= 0; i--) {
                         document.getElementsByClassName(`maze-block cell${i}-${shadHorizontalCoord}`)[0].className += " shadow-cell";
+                        document.getElementsByClassName(`maze-block cell${i}-${shadHorizontalCoord}`)[0].dataset.taken = "true";
+                        
                         console.log("adding shadow cell going straight up");
                     }
                 }
 
-                //start
                 else if(Number(shadHorizontalCoord) > Number(lightHorizontalCoord)) {
                     //top right corner.
                     console.log('top right corner?')
@@ -172,11 +178,10 @@ document.getElementById('lightOn').onclick = () => {
                     let jmax = (Number(shadHorizontalCoord) - Number(lightHorizontalCoord));
                     let icurrent = imax;
                     let jcurrent = jmax;
-                    let escape = 0;
                     while(Number(i) >= 0 && Number(j) < Number(MAZEX)) {
-                        console.log(`doing i${i} j${j}`);
                         if(Number(jcurrent) > 0) {
                             document.getElementsByClassName(`maze-block cell${i}-${j}`)[0].className += " shadow-cell";
+                            document.getElementsByClassName(`maze-block cell${i}-${j}`)[0].dataset.taken = "true";
                             j++;
                             jcurrent--;
                             if(Number(j) == Number(MAZEX)) {
@@ -186,6 +191,53 @@ document.getElementById('lightOn').onclick = () => {
                         }
                         if (Number(icurrent) > 0) {
                             document.getElementsByClassName(`maze-block cell${i}-${j}`)[0].className += " shadow-cell";
+                            document.getElementsByClassName(`maze-block cell${i}-${j}`)[0].dataset.taken = "true";
+                            i--;
+                            icurrent--;
+                            if(Number(i) < 0) {
+                                console.log('now done 2');
+                                break;
+                            }
+                        }
+                        if(Number(icurrent) == 0 && Number(jcurrent) == 0) {
+                            icurrent = imax;
+                            jcurrent = jmax;
+                        }
+                    }
+                }
+
+                else if(Number(shadHorizontalCoord) < Number(lightHorizontalCoord)) {
+                    //top left corner.
+                    console.log('top left corner?')
+                    let i = (Number(shadVerticalCoord));
+                    let j = (Number(shadHorizontalCoord));
+
+                    if((Number(shadHorizontalCoord) - Number(lightHorizontalCoord)) > (Number(lightVerticalCoord) - Number(shadVerticalCoord))) {
+                        j -= 1;
+                    } else {
+                        i -= 1;
+                    }
+
+                    let imax = ((Number(lightVerticalCoord) - Number(shadVerticalCoord)));
+                    let jmax = (Number(lightHorizontalCoord) - Number(shadHorizontalCoord));
+                    let icurrent = imax;
+                    let jcurrent = jmax;
+                    let escape = 0;
+                    while(Number(i) >= 0 && Number(j) >= 0) {
+                        console.log(`doing i${i} j${j}`);
+                        if(Number(jcurrent) > 0) {
+                            document.getElementsByClassName(`maze-block cell${i}-${j}`)[0].className += " shadow-cell";
+                            document.getElementsByClassName(`maze-block cell${i}-${j}`)[0].dataset.taken = "true";
+                            j--;
+                            jcurrent--;
+                            if(Number(j) < 0) {
+                                console.log('now done');
+                                break;
+                            }
+                        }
+                        if (Number(icurrent) > 0) {
+                            document.getElementsByClassName(`maze-block cell${i}-${j}`)[0].className += " shadow-cell";
+                            document.getElementsByClassName(`maze-block cell${i}-${j}`)[0].dataset.taken = "true";
                             i--;
                             icurrent--;
                             if(Number(i) < 0) {
@@ -204,7 +256,6 @@ document.getElementById('lightOn').onclick = () => {
                         }
                     }
                 }
-                //end
 
 
             } else if (Number(shadVerticalCoord) == Number(lightVerticalCoord)) {
@@ -212,12 +263,14 @@ document.getElementById('lightOn').onclick = () => {
                 if(Number(shadHorizontalCoord) > Number(lightHorizontalCoord)) {
                     for(let i = (Number(shadHorizontalCoord)+1); i < MAZEX; i++) {
                         document.getElementsByClassName(`maze-block cell${shadVerticalCoord}-${i}`)[0].className += " shadow-cell";
+                        document.getElementsByClassName(`maze-block cell${shadVerticalCoord}-${i}`)[0].dataset.taken = "true";
                         console.log("adding shadow cell going straight right");
                     }
                 } else if (Number(shadHorizontalCoord) < Number(lightHorizontalCoord)) {
                     for(let i = (Number(shadHorizontalCoord)-1); i >= 0; i--) {
                         console.log(`setting: maze-block cell${shadVerticalCoord}-${i}`);
                         document.getElementsByClassName(`maze-block cell${shadVerticalCoord}-${i}`)[0].className += " shadow-cell";
+                        document.getElementsByClassName(`maze-block cell${shadVerticalCoord}-${i}`)[0].dataset.taken = "true";
                         console.log("adding shaddow cell going straight left");
                     }
                 }
@@ -246,25 +299,21 @@ document.getElementById('lightOn').onclick = () => {
             for(let j = Number(verticalCoord)-Number(i); j <= Number(verticalCoord)+Number(i); j++) {
                 for(let k = Number(horizontalCoord)-Number(i); k <= Number(horizontalCoord)+Number(i); k++) {
 
-                    if(document.getElementsByClassName(`maze-block cell${j}-${k}`)[0].className.indexOf('light-cell') >= 0) {
-                        continue;
-                    }
-                    //if(document.getElementsByClassName(`maze-block cell${j}-${k}`)[0].className.indexOf('blocked-cell') >= 0) {
-                    //    shadowZones.push(`maze-block cell${j}-${k}`);
-                    //    continue;
-                        //for(let q = )
-                    //}
+                    if( (j >= 0) && (j <= MAZEY) && (k >= 0) && (k <= MAZEX) &&
+                        !(document.getElementsByClassName(`maze-block cell${j}-${k}`)[0].className.indexOf('light-cell') >= 0) &&
+                        !(document.getElementsByClassName(`maze-block cell${j}-${k}`)[0].className.indexOf(' shadow-cell') >= 0) &&
+                        !(document.getElementsByClassName(`maze-block cell${j}-${k}`)[0].className.indexOf(' blocked-cell') >= 0)) {
+                    
 
-                    if(document.getElementsByClassName(`maze-block cell${j}-${k}`)[0].className.indexOf('dimmness') >= 0) {
-                        console.log('replacing dimmness on ' + j + '-' + k);
-                        //replace dimmness
-                        document.getElementsByClassName(`maze-block cell${j}-${k}`)[0].className = 
-                            document.getElementsByClassName(`maze-block cell${j}-${k}`)[0].className.substring(
-                                0, document.getElementsByClassName(`maze-block cell${j}-${k}`)[0].className.indexOf('dimmness')+8) + i;
-                    } else {
-                        console.log('adding initial dimmness on ' + j + '-' + k);
-                        document.getElementsByClassName(`maze-block cell${j}-${k}`)[0].className += (' dimmness' + i);
-                        document.getElementsByClassName(`maze-block cell${j}-${k}`)[0].dataset.taken = true;
+                            if(document.getElementsByClassName(`maze-block cell${j}-${k}`)[0].className.indexOf('dimmness') >= 0) {
+                                //replace dimmness
+                                document.getElementsByClassName(`maze-block cell${j}-${k}`)[0].className = 
+                                    document.getElementsByClassName(`maze-block cell${j}-${k}`)[0].className.substring(
+                                        0, document.getElementsByClassName(`maze-block cell${j}-${k}`)[0].className.indexOf('dimmness')+8) + i;
+                            } else {
+                                document.getElementsByClassName(`maze-block cell${j}-${k}`)[0].className += (' dimmness' + i);
+                                document.getElementsByClassName(`maze-block cell${j}-${k}`)[0].dataset.taken = true;
+                            }
                     }
                 }
 

@@ -1,3 +1,6 @@
+html {
+    background-color: #bbb;
+}
 .controls {
     display: flex;
     flex-direction: row;
@@ -57,6 +60,6 @@
     /* background-color: #E8C2BE; */
 }
 
-.shadow-cell {
-    background-color: #bbb;
-}
+/* .shadow-cell {
+    background-color: #f14e4e;
+} */
