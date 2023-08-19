@@ -6,7 +6,7 @@ let STARTTIME = 0;
 let TOTAL_RENDER_TIME = 0;
 let mazecells = document.getElementsByClassName("maze-block");
 
-const dimmingSteps = 4;//VARIABLE
+const dimmingSteps = 3;//VARIABLE
 const lightSources = [];
 const shadowZones = [];
 
@@ -28,6 +28,7 @@ document.getElementById('build').onclick = () => {
             } else {
                 console.log('clicked cell, current insert mode is wall');
                 e.target.dataset.taken = "true";
+                shadowZones.push(e.target.className);
                 e.target.className = e.target.className + " blocked-cell"; 
             }
             
@@ -39,6 +40,122 @@ document.getElementById('lightOn').onclick = () => {
     
     dimmingSteps;//remember to make this variable
 
+    //Find all walls/blocked cells and generate shadow zones for them
+    lightSources.forEach(light => {
+        console.log("For each shadow in relation to each light source")
+        let coords = light.substring(light.indexOf(' cell') + 5);
+        let lightVerticalCoord = coords.substring(0, coords.indexOf('-'));
+        let lightHorizontalCoord = coords.substring(coords.indexOf('-')+1);
+
+        shadowZones.forEach(wall => {
+            console.log("For each wall:");
+            let shadCoords = wall.substring(wall.indexOf(' cell') + 5);
+            let shadVerticalCoord = shadCoords.substring(0, shadCoords.indexOf('-'));
+            let shadHorizontalCoord = shadCoords.substring(shadCoords.indexOf('-')+1);
+
+            if(Number(shadVerticalCoord) > Number(lightVerticalCoord)) { //Shad1, wall above light, shad 6  light 14
+                console.log('shad1');
+                console.log(`shadVert: ${shadVerticalCoord}  lightVert: ${lightVerticalCoord}`);
+                if(Number(shadHorizontalCoord) == Number(lightHorizontalCoord)) {
+                    for(let i = (Number(shadVerticalCoord)+1); i < MAZEY; i++) {
+                        document.getElementsByClassName(`maze-block cell${i}-${shadHorizontalCoord}`)[0].className += " shadow-cell";
+                        console.log("adding shadow cell going straight up");
+                    }
+                } else if(Number(shadHorizontalCoord) > Number(lightHorizontalCoord)) {
+                    //bottom right corner.
+                    let i = (Number(shadVerticalCoord));
+                    let j = (Number(shadHorizontalCoord));
+
+                    if((Number(shadHorizontalCoord) - Number(lightHorizontalCoord)) > (Number(shadVerticalCoord) - Number(lightVerticalCoord))) {
+                        j += 1;
+                    } else {
+                        i += 1;
+                    }
+
+                    let imax = ((Number(shadVerticalCoord) - Number(lightVerticalCoord)));
+                    let jmax = (Number(shadHorizontalCoord) - Number(lightHorizontalCoord));
+                    let icurrent = imax;
+                    let jcurrent = jmax;
+                    while(Number(i) < Number(MAZEY) && Number(j) < Number(MAZEX)) {
+                        console.log(`doing i${i} j${j}`);
+                        if(Number(jcurrent) > 0) {
+                            document.getElementsByClassName(`maze-block cell${i}-${j}`)[0].className += " shadow-cell";
+                            j++;
+                            jcurrent--;
+                        }
+                        if (Number(icurrent) > 0) {
+                            document.getElementsByClassName(`maze-block cell${i}-${j}`)[0].className += " shadow-cell";
+                            i++;
+                            icurrent--;
+                        }
+                        if(Number(icurrent) == 0 && Number(jcurrent) == 0) {
+                            icurrent = imax;
+                            jcurrent = jmax;
+                        }
+                    }
+                } else if (Number(shadHorizontalCoord) < Number(lightHorizontalCoord)) {
+                    //bottom left corner
+                    let i = (Number(shadVerticalCoord));
+                    let j = (Number(shadHorizontalCoord));
+
+                    if((Number(shadHorizontalCoord) - Number(lightHorizontalCoord)) > (Number(shadVerticalCoord) - Number(lightVerticalCoord))) {
+                        j += 1;
+                    } else {
+                        i += 1;
+                    }
+
+                    let imax = ((Number(shadVerticalCoord) - Number(lightVerticalCoord)));
+                    let jmax = (Number(shadHorizontalCoord) - Number(lightHorizontalCoord));
+                    let icurrent = imax;
+                    let jcurrent = jmax;
+                    while(Number(i) < Number(MAZEY) && Number(j) > 0) {
+                        console.log(`doing i${i} j${j}`);
+                        if(Number(jcurrent) > 0) {
+                            document.getElementsByClassName(`maze-block cell${i}-${j}`)[0].className += " shadow-cell";
+                            j--;
+                            jcurrent--;
+                        }
+                        if (Number(icurrent) > 0) {
+                            document.getElementsByClassName(`maze-block cell${i}-${j}`)[0].className += " shadow-cell";
+                            i++;
+                            icurrent--;
+                        }
+                        if(Number(icurrent) == 0 && Number(jcurrent) == 0) {
+                            icurrent = imax;
+                            jcurrent = jmax;
+                        }
+                    }
+                }
+            } else if (Number(shadVerticalCoord) < Number(lightVerticalCoord)) {
+                console.log('shad2');
+                if(Number(shadHorizontalCoord) == Number(lightHorizontalCoord)) {
+                    for(let i = (Number(shadVerticalCoord)-1); i >= 0; i--) {
+                        document.getElementsByClassName(`maze-block cell${i}-${shadHorizontalCoord}`)[0].className += " shadow-cell";
+                        console.log("adding shadow cell going straight up");
+                    }
+                }
+
+            } else if (Number(shadVerticalCoord) == Number(lightVerticalCoord)) {
+                console.log("shadow vertical is equal to light vertical");
+                if(Number(shadHorizontalCoord) > Number(lightHorizontalCoord)) {
+                    for(let i = (Number(shadHorizontalCoord)+1); i < MAZEX; i++) {
+                        document.getElementsByClassName(`maze-block cell${shadVerticalCoord}-${i}`)[0].className += " shadow-cell";
+                        console.log("adding shadow cell going straight right");
+                    }
+                } else if (Number(shadHorizontalCoord) < Number(lightHorizontalCoord)) {
+                    for(let i = (Number(shadHorizontalCoord)-1); i >= 0; i--) {
+                        console.log(`setting: maze-block cell${shadVerticalCoord}-${i}`);
+                        document.getElementsByClassName(`maze-block cell${shadVerticalCoord}-${i}`)[0].className += " shadow-cell";
+                        console.log("adding shaddow cell going straight left");
+                    }
+                }
+            } else {
+                alert("This shouldnt happen");
+            }
+        });
+
+    });
+    console.log("Done with shadows");
     lightSources.forEach(light => {
         console.log('light source: ' + light);
         let coords = light.substring(light.indexOf(' cell') + 5);
@@ -46,7 +163,13 @@ document.getElementById('lightOn').onclick = () => {
         let horizontalCoord = coords.substring(coords.indexOf('-')+1);
         console.log(verticalCoord + ' ' + horizontalCoord);
 
+
         for (let i = dimmingSteps; i >= 1; i--) {
+            //Maybe what I can do is instead of setting a dimmness value based on distance
+            //I can just do a pass through for each cell, and do something like layers 3-1 get 1 dimmness marker, layers 2-1 get 1 dimmness marker, layer 1 gets one dimness marker
+            //Then do the math on the cumulative amount of dimmness markers for colour.
+            //This would mean that two intersecting light sources could add their dimmness values up regardless of source and get a more realistic spread
+            //conditions: No value can be more 'bright' than source brigtness (ie dimmness 3?), so stop there/round down.
 
             for(let j = Number(verticalCoord)-Number(i); j <= Number(verticalCoord)+Number(i); j++) {
                 for(let k = Number(horizontalCoord)-Number(i); k <= Number(horizontalCoord)+Number(i); k++) {
@@ -54,10 +177,11 @@ document.getElementById('lightOn').onclick = () => {
                     if(document.getElementsByClassName(`maze-block cell${j}-${k}`)[0].className.indexOf('light-cell') >= 0) {
                         continue;
                     }
-                    if(document.getElementsByClassName(`maze-block cell${j}-${k}`)[0].className.indexOf('blocked-cell') >= 0) {
-                        shadowZones.push(`maze-block cell${j}-${k}`);
-                        for(let q = )
-                    }
+                    //if(document.getElementsByClassName(`maze-block cell${j}-${k}`)[0].className.indexOf('blocked-cell') >= 0) {
+                    //    shadowZones.push(`maze-block cell${j}-${k}`);
+                    //    continue;
+                        //for(let q = )
+                    //}
 
                     if(document.getElementsByClassName(`maze-block cell${j}-${k}`)[0].className.indexOf('dimmness') >= 0) {
                         console.log('replacing dimmness on ' + j + '-' + k);

@@ -38,7 +38,8 @@
 }
 
 .light-cell {
-    background-color: #EADC0C;
+    /* background-color: #EADC0C; */
+    background-color: gold;
 }
 
 .dimmness1 {
