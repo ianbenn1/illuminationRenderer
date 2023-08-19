@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A depth first search that works through a maze you make for it">
+    <title>Illumination Renderer</title>
+    <!--Resources:-->
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <div class="page">
+        
+        <div class="controls">
+            <div>
+                <p>Resolution</p>
+                <div class="maze-line">
+                    <p>Height:</p>
+                    <input type="text" id="maze-height" placeholder="30">
+                    <p>Width:</p>
+                    <input type="text" id="maze-width" placeholder="30">
+                </div>
+            </div>
+            
+            <button type="button" id="build" style="padding: 15px;">Build</button>
+            <h1>|</h1>
+            <button type="button" id="lightOn" style="background-color: #a1ccbe; padding: 15px;">Light On</button>
+        </div>
+        <p>Click field to:</p>
+        <input type="radio" id="lightrb" name="insert_type" value="light" checked>
+        <label for="lightrb">Insert Light</label><br>
+        <input type="radio" id="wallrb" name="insert_type" value="wall">
+        <label for="wallrb">Insert Wall</label><br>
+        <br />
+        <div class="field">
+        </div>
+    </div>
+    <script src="index.js"></script>
+</body>
+</html>

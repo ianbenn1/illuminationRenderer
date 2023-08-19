@@ -1,0 +1,61 @@
+.controls {
+    display: flex;
+    flex-direction: row;
+}
+.controls * {
+    margin-left: 20px;
+}
+.controls input {
+    height: 25px;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+.field {
+    display: flex;
+    flex-direction: column;
+}
+.maze-block {
+    height: 15px;
+    width: 15px;
+    border: 1px solid black;
+}
+
+.maze-line {
+    display: flex;
+    flex-direction: row;
+}
+
+.starting-cell {
+    background-color: rgb(69, 190, 110);
+}
+
+.ending-cell {
+    background-color: rgb(216, 27, 27);
+}
+
+.blocked-cell {
+    background-color: black;
+}
+
+.light-cell {
+    background-color: #EADC0C;
+}
+
+.dimmness1 {
+    background-color: #E4DB5D;
+    /* background-color: #F51111; */
+}
+
+.dimmness2 {
+    background-color: #E4DF92;
+    /* background-color: #F77575; */
+}
+
+.dimmness3 {
+    background-color: #F0EECE;
+    /* background-color: #E8C2BE; */
+}
+
+.shadow-cell {
+    background-color: #bbb;
+}
