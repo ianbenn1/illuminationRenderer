@@ -82,11 +82,19 @@ document.getElementById('lightOn').onclick = () => {
                             document.getElementsByClassName(`maze-block cell${i}-${j}`)[0].className += " shadow-cell";
                             j++;
                             jcurrent--;
+                            if(Number(j) == Number(MAZEX)) {
+                                console.log('now done');
+                                break;
+                            }
                         }
                         if (Number(icurrent) > 0) {
                             document.getElementsByClassName(`maze-block cell${i}-${j}`)[0].className += " shadow-cell";
                             i++;
                             icurrent--;
+                            if(Number(i) == Number(MAZEY)) {
+                                console.log('now done 2');
+                                break;
+                            }
                         }
                         if(Number(icurrent) == 0 && Number(jcurrent) == 0) {
                             icurrent = imax;
@@ -95,30 +103,42 @@ document.getElementById('lightOn').onclick = () => {
                     }
                 } else if (Number(shadHorizontalCoord) < Number(lightHorizontalCoord)) {
                     //bottom left corner
+                    console.log('findme');
                     let i = (Number(shadVerticalCoord));
                     let j = (Number(shadHorizontalCoord));
 
-                    if((Number(shadHorizontalCoord) - Number(lightHorizontalCoord)) > (Number(shadVerticalCoord) - Number(lightVerticalCoord))) {
-                        j += 1;
+                    if((Number(lightHorizontalCoord) - Number(shadHorizontalCoord)) > (Number(shadVerticalCoord) - Number(lightVerticalCoord))) {
+                        j -= 1;
                     } else {
                         i += 1;
                     }
 
                     let imax = ((Number(shadVerticalCoord) - Number(lightVerticalCoord)));
-                    let jmax = (Number(shadHorizontalCoord) - Number(lightHorizontalCoord));
+                    let jmax = ((Number(lightHorizontalCoord) - Number(shadHorizontalCoord)));
                     let icurrent = imax;
                     let jcurrent = jmax;
-                    while(Number(i) < Number(MAZEY) && Number(j) > 0) {
-                        console.log(`doing i${i} j${j}`);
+                    console.log(`mazey: ${MAZEY} mazeX: ${MAZEX}`)
+                    while(Number(i) < Number(MAZEY) && Number(j) >= 0) {
+                        console.log(`now on i${i} j${j}`);
                         if(Number(jcurrent) > 0) {
+                            console.log('doing j');
                             document.getElementsByClassName(`maze-block cell${i}-${j}`)[0].className += " shadow-cell";
                             j--;
                             jcurrent--;
+                            if(Number(j) < 0) {
+                                console.log('1 now done');
+                                break;
+                            }
                         }
                         if (Number(icurrent) > 0) {
+                            console.log('doing i')
                             document.getElementsByClassName(`maze-block cell${i}-${j}`)[0].className += " shadow-cell";
                             i++;
                             icurrent--;
+                            if(Number(i) == Number(MAZEY)) {
+                                console.log('1 now done 2');
+                                break;
+                            }
                         }
                         if(Number(icurrent) == 0 && Number(jcurrent) == 0) {
                             icurrent = imax;
@@ -134,6 +154,58 @@ document.getElementById('lightOn').onclick = () => {
                         console.log("adding shadow cell going straight up");
                     }
                 }
+
+                //start
+                else if(Number(shadHorizontalCoord) > Number(lightHorizontalCoord)) {
+                    //top right corner.
+                    console.log('top right corner?')
+                    let i = (Number(shadVerticalCoord));
+                    let j = (Number(shadHorizontalCoord));
+
+                    if((Number(shadHorizontalCoord) - Number(lightHorizontalCoord)) > (Number(lightVerticalCoord) - Number(shadVerticalCoord))) {
+                        j += 1;
+                    } else {
+                        i -= 1;
+                    }
+
+                    let imax = ((Number(lightVerticalCoord) - Number(shadVerticalCoord)));
+                    let jmax = (Number(shadHorizontalCoord) - Number(lightHorizontalCoord));
+                    let icurrent = imax;
+                    let jcurrent = jmax;
+                    let escape = 0;
+                    while(Number(i) >= 0 && Number(j) < Number(MAZEX)) {
+                        console.log(`doing i${i} j${j}`);
+                        if(Number(jcurrent) > 0) {
+                            document.getElementsByClassName(`maze-block cell${i}-${j}`)[0].className += " shadow-cell";
+                            j++;
+                            jcurrent--;
+                            if(Number(j) == Number(MAZEX)) {
+                                console.log('now done');
+                                break;
+                            }
+                        }
+                        if (Number(icurrent) > 0) {
+                            document.getElementsByClassName(`maze-block cell${i}-${j}`)[0].className += " shadow-cell";
+                            i--;
+                            icurrent--;
+                            if(Number(i) < 0) {
+                                console.log('now done 2');
+                                break;
+                            }
+                        }
+                        if(Number(icurrent) == 0 && Number(jcurrent) == 0) {
+                            icurrent = imax;
+                            jcurrent = jmax;
+                        }
+                        escape++;
+                        if (escape == 2000) {
+                            alert('emergency anit-bork.');
+                            break;
+                        }
+                    }
+                }
+                //end
+
 
             } else if (Number(shadVerticalCoord) == Number(lightVerticalCoord)) {
                 console.log("shadow vertical is equal to light vertical");
