@@ -45,7 +45,7 @@ html {
     background-color: gold;
 }
 
-.dimmness1 {
+.dimmness3 {
     background-color: #E4DB5D;
     /* background-color: #F51111; */
 }
@@ -55,11 +55,11 @@ html {
     /* background-color: #F77575; */
 }
 
-.dimmness3 {
+.dimmness1 {
     background-color: #F0EECE;
     /* background-color: #E8C2BE; */
 }
 
-/* .shadow-cell {
+.shadow-cell {
     background-color: #f14e4e;
-} */
+}

@@ -281,6 +281,14 @@ document.getElementById('lightOn').onclick = () => {
 
     });
     console.log("Done with shadows");
+    let lightingArray = [];
+    for(let i = 0; i < MAZEY; i++) {
+        let row = []
+        for(let j = 0; j < MAZEX; j++) {
+            row.push(0);
+        }
+        lightingArray.push(row);
+    }
     lightSources.forEach(light => {
         console.log('light source: ' + light);
         let coords = light.substring(light.indexOf(' cell') + 5);
@@ -295,6 +303,7 @@ document.getElementById('lightOn').onclick = () => {
             //Then do the math on the cumulative amount of dimmness markers for colour.
             //This would mean that two intersecting light sources could add their dimmness values up regardless of source and get a more realistic spread
             //conditions: No value can be more 'bright' than source brigtness (ie dimmness 3?), so stop there/round down.
+            //DONE!
 
             for(let j = Number(verticalCoord)-Number(i); j <= Number(verticalCoord)+Number(i); j++) {
                 for(let k = Number(horizontalCoord)-Number(i); k <= Number(horizontalCoord)+Number(i); k++) {
@@ -304,23 +313,24 @@ document.getElementById('lightOn').onclick = () => {
                         !(document.getElementsByClassName(`maze-block cell${j}-${k}`)[0].className.indexOf(' shadow-cell') >= 0) &&
                         !(document.getElementsByClassName(`maze-block cell${j}-${k}`)[0].className.indexOf(' blocked-cell') >= 0)) {
                     
-
-                            if(document.getElementsByClassName(`maze-block cell${j}-${k}`)[0].className.indexOf('dimmness') >= 0) {
-                                //replace dimmness
-                                document.getElementsByClassName(`maze-block cell${j}-${k}`)[0].className = 
-                                    document.getElementsByClassName(`maze-block cell${j}-${k}`)[0].className.substring(
-                                        0, document.getElementsByClassName(`maze-block cell${j}-${k}`)[0].className.indexOf('dimmness')+8) + i;
-                            } else {
-                                document.getElementsByClassName(`maze-block cell${j}-${k}`)[0].className += (' dimmness' + i);
-                                document.getElementsByClassName(`maze-block cell${j}-${k}`)[0].dataset.taken = true;
+                            if(lightingArray[j][k] < 3) {
+                                lightingArray[j][k] += 1
                             }
                     }
                 }
-
             }
         }
-
     });
+
+    let i = 0;
+    lightingArray.forEach(row => {
+        let j = 0;
+        row.forEach(cell => {
+            document.getElementsByClassName(`maze-block cell${i}-${j}`)[0].className += (' dimmness' + cell);
+            j++;
+        });
+        i++;
+    })
     
 };
 
