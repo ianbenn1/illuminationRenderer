@@ -3,10 +3,9 @@ let MAZEY = 0;
 let ENDPOINTX = 0;
 let ENDPOINTY = 0;
 let STARTTIME = 0;
-let TOTAL_RENDER_TIME = 0;
 let mazecells = document.getElementsByClassName("maze-block");
 
-const dimmingSteps = 3;//VARIABLE
+let dimmingSteps = 3;//VARIABLE
 const lightSources = [];
 const shadowZones = [];
 
@@ -38,7 +37,7 @@ document.getElementById('build').onclick = () => {
 
 document.getElementById('lightOn').onclick = () => {
     
-    dimmingSteps;//remember to make this variable
+    dimmingSteps = Number(document.getElementById("lightdist").value);
 
     //Find all walls/blocked cells and generate shadow zones for them [TODO!: fix shadows so they only affect the light they're drawn from]
     lightSources.forEach(light => {
@@ -308,7 +307,7 @@ document.getElementById('lightOn').onclick = () => {
             for(let j = Number(verticalCoord)-Number(i); j <= Number(verticalCoord)+Number(i); j++) {
                 for(let k = Number(horizontalCoord)-Number(i); k <= Number(horizontalCoord)+Number(i); k++) {
 
-                    if( (j >= 0) && (j <= MAZEY) && (k >= 0) && (k <= MAZEX) &&
+                    if( (j >= 0) && (j < MAZEY) && (k >= 0) && (k < MAZEX) &&
                         !(document.getElementsByClassName(`maze-block cell${j}-${k}`)[0].className.indexOf('light-cell') >= 0) &&
                         !(document.getElementsByClassName(`maze-block cell${j}-${k}`)[0].className.indexOf(` shadow-from${verticalCoord}-${horizontalCoord}`) >= 0) &&
                         !(document.getElementsByClassName(`maze-block cell${j}-${k}`)[0].className.indexOf(' blocked-cell') >= 0)) {
